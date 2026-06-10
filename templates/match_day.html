@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cricket Legacy: Pro - Match Day</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="match-container tier-state">
+        <div class="overlay"></div>
+
+       <div class="game-wrapper">
+   <!-- Box 1: Team & Score -->
+<div class="info-box scoreboard">
+    <div class="box-badge">Match Status</div>
+    <h2>Inter-School Cup</h2>
+    <p>Target: 158 | Overs: 18.2/20</p>
+</div>
+
+<!-- Box 2: Pitch & Weather -->
+<div class="info-box environment">
+    <div class="box-badge">Conditions</div>
+    <p>Pitch: <strong>Flat Road</strong></p>
+    <p>Weather: Clear Sky</p>
+</div>
+
+<!-- Box 3: Batting Intent (Cleaned up Buttons) -->
+<div class="info-box tactical-intent">
+    <div class="box-badge">Batting Intent</div>
+    <div class="intent-selectors">
+        <button class="intent-btn active">Steady</button>
+        <button class="intent-btn">Attack</button>
+        <button class="intent-btn">Defend</button>
+    </div>
+</div>
+
+<!-- Box 4: Action Question -->
+<div class="info-box action-box">
+    <div class="box-badge">Decision</div>
+    <p>Ball: Short & Bouncy. What is your shot?</p>
+    <select class="action-dropdown">
+        <option>Pull Shot</option>
+        <option>Duck</option>
+        <option>Upper Cut</option>
+    </select>
+    <button class="start-btn">CONFIRM ACTION</button>
+</div>
+</div>
+                
+                <div class="action-buttons-grid">
+                    <button class="game-btn shot-btn" onclick="playShot('Defend')">🛡️ Defend</button>
+                    <button class="game-btn shot-btn" onclick="playShot('Drive')">🏏 Drive</button>
+                    <button class="game-btn shot-btn" onclick="playShot('Pull')">💥 Pull Shot</button>
+                    <button class="game-btn shot-btn" onclick="playShot('Lofted')">🚀 Lofted</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>

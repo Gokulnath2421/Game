@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | {{ p.name }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="dashboard-page">
+    <main class="dashboard-shell">
+        <header class="topbar">
+            <a href="/" class="home-link" aria-label="Back to home">Home</a>
+            <div>
+                <p class="eyebrow">Career Hub</p>
+                <h1>{{ p.tournament }}</h1>
+            </div>
+            <div class="date-pill">{{ p.format }} | {{ p.current_date }}</div>
+        </header>
+
+        <section class="dashboard-grid">
+            <aside class="panel action-panel">
+                <div class="panel-heading">
+                    <p class="eyebrow">Training</p>
+                    <h2>Facilities</h2>
+                </div>
+
+                <nav class="action-list" aria-label="Daily actions">
+                    <a href="/training/nets" class="action-card">
+                        <span>Nets</span>
+                        <small>Choose batting, spin, or yorker work</small>
+                    </a>
+                    <a href="/training/gym" class="action-card">
+                        <span>Gym</span>
+                        <small>Choose stamina, strength, or agility</small>
+                    </a>
+                    <a href="/training/rest" class="action-card">
+                        <span>Rest</span>
+                        <small>Choose sleep, physio, or meditation</small>
+                    </a>
+                </nav>
+
+                <div class="status-stack">
+                    <div class="meter">
+                        <div class="meter-label"><span>Fitness</span><strong>{{ p.fitness }}%</strong></div>
+                        <div class="meter-track"><div class="meter-fill fitness" style="width: {{ p.fitness }}%;"></div></div>
+                    </div>
+                    <div class="meter">
+                        <div class="meter-label"><span>Confidence</span><strong>{{ p.confidence }}%</strong></div>
+                        <div class="meter-track"><div class="meter-fill confidence" style="width: {{ p.confidence }}%;"></div></div>
+                    </div>
+                    <div class="meter">
+                        <div class="meter-label"><span>Stress</span><strong>{{ p.stress }}%</strong></div>
+                        <div class="meter-track"><div class="meter-fill stress" style="width: {{ p.stress }}%;"></div></div>
+                    </div>
+                </div>
+            </aside>
+
+            <section class="panel season-panel">
+                <div class="panel-heading">
+                    <p class="eyebrow">Season Window</p>
+                    <h2>{{ p.level }} {{ p.format }} Campaign</h2>
+                </div>
+
+                <div class="calendar-strip" aria-label="Upcoming days">
+                    {% for day in calendar_days %}
+                    <div class="calendar-day {% if day.is_current %}current{% endif %} {% if day.is_match %}match{% endif %}">
+                        <span>{{ day.number }}</span>
+                        <small>{{ day.label }}</small>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="match-card">
+                    <div>
+                        <p class="eyebrow">Next Fixture</p>
+                        <h3>Your Team vs Titans</h3>
+                        <p class="match-note">A strong performance can push you up the squad order.</p>
+                    </div>
+                    {% if is_match %}
+                    <button id="matchDayBtn" class="primary-btn" type="button" onclick="confirmMatchDayWindow()">Play Match</button>
+                    {% else %}
+                    <a href="/advance_day" class="primary-btn quiet">Advance Day</a>
+                    {% endif %}
+                </div>
+
+                <div class="table-wrap">
+                    <div class="section-title">Points Table</div>
+                    <table class="league-table">
+                        <thead>
+                            <tr><th>Team</th><th>P</th><th>W</th><th>L</th><th>Pts</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for t in p.points_table | sort(attribute='pts', reverse=True) %}
+                            <tr class="{% if t.team == 'Your Team' %}team-highlight{% endif %}">
+                                <td>{{ t.team }}</td>
+                                <td>{{ t.p }}</td>
+                                <td>{{ t.w }}</td>
+                                <td>{{ t.l }}</td>
+                                <td>{{ t.pts }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="story-grid">
+                    <article class="story-card">
+                        <span>Headline</span>
+                        <p>{{ p.headline }}</p>
+                    </article>
+                    <article class="story-card">
+                        <span>Coach</span>
+                        <p>{{ p.coach_note }}</p>
+                    </article>
+                    <article class="story-card">
+                        <span>Selection</span>
+                        <p>{{ p.selection_status }}</p>
+                    </article>
+                    <article class="story-card">
+                        <span>Sponsor</span>
+                        <p>{{ p.sponsor.name }}{% if p.sponsor.deal %} | Rs. {{ p.sponsor.deal }} bonus{% endif %}</p>
+                    </article>
+                </div>
+            </section>
+
+            <aside class="player-column">
+                <section class="id-card">
+                    <div class="id-top">
+                        <p class="eyebrow">{{ p.role }} | {{ p.age }} Years</p>
+                        <h2>{{ p.name }}</h2>
+                        <span>{{ p.level }} Squad</span>
+                        <span class="dob-line">{{ p.playing_style }}</span>
+                        {% if p.date_of_birth %}
+                        <span class="dob-line">DOB {{ p.date_of_birth }}</span>
+                        {% endif %}
+                    </div>
+                    <div class="money-strip">Rs. {{ p.money }}</div>
+                    <div class="stat-grid">
+                        <div class="stat-box"><strong>{{ p.stats.runs }}</strong><span>Runs</span></div>
+                        <div class="stat-box"><strong>{{ p.stats.matches }}</strong><span>Matches</span></div>
+                        <div class="stat-box"><strong>{{ p.stats.wickets }}</strong><span>Wickets</span></div>
+                        <div class="stat-box"><strong>{{ p.stats.centuries }}</strong><span>100s</span></div>
+                    </div>
+                </section>
+
+                <section class="side-card">
+                    <div class="section-title">Career Pulse</div>
+                    <div class="pulse-row"><span>Form</span><strong>{{ p.form }}</strong></div>
+                    <div class="pulse-row"><span>Fans</span><strong>{{ p.fans }}</strong></div>
+                    <div class="pulse-row"><span>Injury</span><strong>{{ p.injury.status }}</strong></div>
+                </section>
+
+                <section class="side-card">
+                    <div class="section-title">Relationships</div>
+                    {% for name, value in p.relationships.items() %}
+                    <div class="pulse-row"><span>{{ name }}</span><strong>{{ value }}</strong></div>
+                    {% endfor %}
+                </section>
+
+                <section class="side-card">
+                    <div class="section-title">Rivals</div>
+                    {% for rival in p.rivals %}
+                    <div class="pulse-row"><span>{{ rival.name }}</span><strong>{{ rival.form }}</strong></div>
+                    {% endfor %}
+                </section>
+
+                <section class="side-card">
+                    <div class="section-title">Memories</div>
+                    {% for memory in p.memories[:4] %}
+                    <p class="memory-line">{{ memory }}</p>
+                    {% else %}
+                    <p class="memory-line">Your story is just beginning.</p>
+                    {% endfor %}
+                </section>
+            </aside>
+        </section>
+    </main>
+
+    <script>
+        function confirmMatchDayWindow() {
+            const proceed = confirm("Match day is starting. Your current fitness, confidence, and stress will affect the result. Continue?");
+            if (proceed) {
+                window.location.href = "/play_match";
+            }
+        }
+    </script>
+</body>
+</html>
